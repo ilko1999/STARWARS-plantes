@@ -23,6 +23,8 @@ export default class Application extends EventEmitter {
     return EVENTS;
   }
 
+  
+
   /**
    * Initializes the app.
    * Called when the DOM has loaded. You can initiate your custom classes here
@@ -31,6 +33,14 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
+    fetch('https://swapi.booost.bg/api/planets/')
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data)
+        this.data.count = data.count;
+        
+        this.data.planets = data.results;
+      });
 
     this.emit(Application.events.APP_READY);
   }
