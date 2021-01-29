@@ -15,6 +15,8 @@ export default class Application extends EventEmitter {
 
     this.config = config;
     this.data = {};
+    this.count = 0;
+    this.planets = [];
 
     this.init();
   }
@@ -33,14 +35,27 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
-    fetch('https://swapi.booost.bg/api/planets/')
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data)
-        this.data.count = data.count;
+    // const data = await fetch('https://swapi.booost.bg/api/planets/')
+    // console.log(await data.json())
+
+
+  //  let f = 0;
         
-        this.data.planets = data.results;
-      });
+  //  do {
+    for(var i = 1; i <= 60; i ++){
+      fetch(`https://swapi.booost.bg/api/planets/${i}/`)
+        .then((resp) => resp.json())
+        .then((data) => {
+          //console.log(data)
+          //this.count = data.count;
+          this.planets.push(data);
+          //console.log(this.planets);
+          //console.log(data.count);
+      }); 
+    }
+    this.count = i;
+    console.log(this.count);
+    console.log(this.planets);
 
     this.emit(Application.events.APP_READY);
   }
