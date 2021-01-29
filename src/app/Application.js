@@ -39,23 +39,22 @@ export default class Application extends EventEmitter {
     // console.log(await data.json())
 
 
-  //  let f = 0;
-        
-  //  do {
-    for(var i = 1; i <= 60; i ++){
-      fetch(`https://swapi.booost.bg/api/planets/${i}/`)
+  
+    //for(let i = 0; i <= 60; i ++){
+      fetch(`https://swapi.booost.bg/api/planets/`)
         .then((resp) => resp.json())
         .then((data) => {
-          //console.log(data)
-          //this.count = data.count;
           this.planets.push(data);
+          
+          this.data = {
+            count: data.count,
+            planets: data.results
+          }
+          //this.count = data.count;
+          console.log(this.data)
           //console.log(this.planets);
-          //console.log(data.count);
       }); 
-    }
-    this.count = i;
-    console.log(this.count);
-    console.log(this.planets);
+    //}
 
     this.emit(Application.events.APP_READY);
   }
