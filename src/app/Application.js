@@ -1,8 +1,8 @@
-import config from '../config';
-import EventEmitter from 'eventemitter3';
+import config from "../config";
+import EventEmitter from "eventemitter3";
 
 const EVENTS = {
-  APP_READY: 'app_ready',
+  APP_READY: "app_ready",
 };
 
 /**
@@ -14,9 +14,10 @@ export default class Application extends EventEmitter {
     super();
 
     this.config = config;
-    this.data = {};
-    this.count = 0;
-    this.planets = [];
+    this.data = {
+      count: 0,
+      planets: [],
+    };
 
     this.init();
   }
@@ -24,8 +25,6 @@ export default class Application extends EventEmitter {
   static get events() {
     return EVENTS;
   }
-
-  
 
   /**
    * Initializes the app.
@@ -38,25 +37,24 @@ export default class Application extends EventEmitter {
     // const data = await fetch('https://swapi.booost.bg/api/planets/')
     // console.log(await data.json())
 
+    //this.emit(Application.events.APP_READY);
 
-  
-    //for(let i = 0; i <= 60; i ++){
-      fetch(`https://swapi.booost.bg/api/planets/`)
-        .then((resp) => resp.json())
-        .then((data) => {
-          this.planets.push(data);
-          
-          this.data = {
-            count: data.count,
-            planets: data.results
-          }
-          //this.count = data.count;
-          console.log(this.data)
-          //console.log(this.planets);
-      }); 
-    //}
+    fetch(`https://swapi.booost.bg/api/planets/`)
+      .then((resp) => resp.json())
+      .then((data) => {
+        this.data.count = data.count;
+        const promiseArray = [];
+        for (let i = 1; i <= this.data.count; i++) {
+          const promise = fetch(
+            `https://swapi.booost.bg/api/planets/${i}`
+          ).then((resp) => resp.json());
+          promiseArray.push(promise);
+        }
 
-    this.emit(Application.events.APP_READY);
+        Promise.all(promiseArray).then((planets) => {
+          this.data.planets = planets;
+          this.emit(Application.events.APP_READY);
+        });
+      });
   }
 }
-
